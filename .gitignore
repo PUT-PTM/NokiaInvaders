@@ -3,24 +3,16 @@
 
 \.project
 
-\.settings/
+\.settings/language\.settings\.xml
 
 Debug/
 
-*.ld
+LinkerScript\.ld
 
-*.cfg
+NokiaInvaders Debug\.cfg
 
-CMSIS/core/
+StdPeriph_Driver/Release_Notes\.html
 
-CMSIS/device/
+STM32F4DISCOVERY\.xml
 
-inc/
-
-startup/
-
-StdPeriph_Driver/
-
-src/syscalls\.c
-
-src/system_stm32f4xx\.c
+Utilities/Release_Notes\.html

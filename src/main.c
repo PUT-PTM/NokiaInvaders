@@ -1,26 +1,43 @@
 #include "stm32f4xx.h"
+#include "stm32f4_discovery.h"
+#include "stm32f4xx_syscfg.h"
+#include "tm_stm32f4_lis302dl_lis3dsh.h"
 
-int main(void)
-{
-	/* GPIOD Periph clock enable */
+typedef enum{
+	false, true
+} bool;
+
+int16_t X;
+int16_t Y;
+int16_t Z;
+
+int main(void){
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	GPIO_InitTypeDef GPIO_diodes;
+	GPIO_diodes.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+	GPIO_diodes.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_diodes.GPIO_OType = GPIO_OType_PP;
+	GPIO_diodes.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_diodes.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOD, &GPIO_diodes);
 
-	GPIO_InitTypeDef  GPIO_InitStructure;
-	/* Configure PD12, PD13, PD14 and PD15 in output pushpull mode */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13| GPIO_Pin_14| GPIO_Pin_15;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-	unsigned int i;
-
-	for(;;)
-	{
-		GPIO_SetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
-		for (i=0;i<1000000;i++);
-		GPIO_ResetBits(GPIOD, GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15);
-		for (i=0;i<1000000;i++);
+	//accelerometer control
+	TM_LIS302DL_LIS3DSH_Init(TM_LIS3DSH_Sensitivity_2G, TM_LIS3DSH_Filter_800Hz);
+	TM_LIS302DL_LIS3DSH_t axes;
+	for(;;){
+		TM_LIS302DL_LIS3DSH_ReadAxes(&axes);
+		X = axes.X * 0.06;
+		Y = axes.Y * 0.06;
+		Z = axes.Z * 0.06;
+		if(X > 250){
+			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+			GPIO_SetBits(GPIOD, GPIO_Pin_14);
+		}else if(X < -250){
+			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
+			GPIO_SetBits(GPIOD, GPIO_Pin_12);
+		}else{
+			GPIO_ResetBits(GPIOD, GPIO_Pin_14);
+			GPIO_ResetBits(GPIOD, GPIO_Pin_12);
+		}
 	}
 }
