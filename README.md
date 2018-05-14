@@ -20,7 +20,7 @@ STM32 System Workbench (IDE) and STM Studio (debugging) www.st.com/STM32
 
 # How to run
 
-Upload the compiled project on the STM32F4DISCOVERY board. A connected Nokia display is required to run it.
+Upload the compiled project onto the STM32F4DISCOVERY board. A connected Nokia display is required to run it.
 
 # How to compile
 
