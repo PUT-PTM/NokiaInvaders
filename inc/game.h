@@ -12,6 +12,7 @@ typedef enum{
 
 void drawInvader();
 void drawPlayer();
+void drawShot();
 void gameLoop();
 
 #endif /* GAME_H_ */

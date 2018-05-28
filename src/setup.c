@@ -16,4 +16,22 @@ void setup(){
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 	TIM_Cmd(TIM2, ENABLE);
+	//user button
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	GPIO_InitTypeDef GPIO_UserButton;
+	GPIO_UserButton.GPIO_Pin = GPIO_Pin_0;
+	GPIO_UserButton.GPIO_Mode = GPIO_Mode_IN;
+	GPIO_UserButton.GPIO_OType = GPIO_OType_PP;
+	GPIO_UserButton.GPIO_PuPd = GPIO_PuPd_DOWN;
+	GPIO_UserButton.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_UserButton);
+	//diode LED
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	GPIO_InitTypeDef GPIO_Diode;
+	GPIO_Diode.GPIO_Pin = GPIO_Pin_13;
+	GPIO_Diode.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_Diode.GPIO_OType = GPIO_OType_PP;
+	GPIO_Diode.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Diode.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOD, &GPIO_Diode);
 }
